@@ -8,9 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/users2/fcla/s1850432/Desktop/HPCA/09.07.2025/NBody/NBody.cpp" "CMakeFiles/nbody.dir/NBody.cpp.o" "gcc" "CMakeFiles/nbody.dir/NBody.cpp.o.d"
-  "/home/users2/fcla/s1850432/Desktop/HPCA/09.07.2025/NBody/src/Body.cpp" "CMakeFiles/nbody.dir/src/Body.cpp.o" "gcc" "CMakeFiles/nbody.dir/src/Body.cpp.o.d"
-  "/home/users2/fcla/s1850432/Desktop/HPCA/09.07.2025/NBody/src/utils.cpp" "CMakeFiles/nbody.dir/src/utils.cpp.o" "gcc" "CMakeFiles/nbody.dir/src/utils.cpp.o.d"
+  "/mnt/c/Users/Salina Maharjan/Desktop/NBody/NBody.cpp" "CMakeFiles/nbody.dir/NBody.cpp.o" "gcc" "CMakeFiles/nbody.dir/NBody.cpp.o.d"
+  "/mnt/c/Users/Salina Maharjan/Desktop/NBody/src/Body.cpp" "CMakeFiles/nbody.dir/src/Body.cpp.o" "gcc" "CMakeFiles/nbody.dir/src/Body.cpp.o.d"
+  "/mnt/c/Users/Salina Maharjan/Desktop/NBody/src/utils.cpp" "CMakeFiles/nbody.dir/src/utils.cpp.o" "gcc" "CMakeFiles/nbody.dir/src/utils.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

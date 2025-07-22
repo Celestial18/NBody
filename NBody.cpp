@@ -167,9 +167,12 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
     sf::Clock frameClock;
     sf::Clock fpsClock;
     float lastFPS = 0.0f;
+    int frame_count = 0;
 
+    // Start total timer
+    auto total_start = std::chrono::high_resolution_clock::now();
 
-    while (window.isOpen()){
+    while (window.isOpen() && frame_count < 1000){
         sf::Event e;
         while(window.pollEvent(e)){ if (e.type == sf::Event::Closed) window.close();}
        
@@ -218,7 +221,7 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
         auto compute_end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> compute_duration = compute_end - compute_start;
 
-        if (use_gpu)
+        /*if (use_gpu)
             std::cout << "[OpenCL] Compute time: " << compute_duration.count() << " ms\n";
         else
             std::cout << "[CPU] Compute time: " << compute_duration.count() << " ms\n";
@@ -244,6 +247,8 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
         // Show everything
         window.display();
 
+        frame_count++;
+        
         // Frame rate control
         sf::Time frameElapsed = frameClock.getElapsedTime();
         if (frameElapsed < FRAME_DURATION) {
@@ -251,6 +256,12 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
         }
         frameClock.restart();
     }
+    auto total_end = std::chrono::high_resolution_clock::now();
+    double total_time = std::chrono::duration<double, std::milli>(total_end - total_start).count();
+    if (use_gpu)
+        std::cout << "[GPU] Total time for 1000 frames: " << total_time << " ms\n";
+    else
+        std::cout << "[CPU] Total time for 1000 frames: " << total_time << " ms\n";
 
     return 0;
 
