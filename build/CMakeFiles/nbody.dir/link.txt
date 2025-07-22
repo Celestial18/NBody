@@ -1,0 +1,1 @@
+/usr/bin/g++ CMakeFiles/nbody.dir/NBody.cpp.o CMakeFiles/nbody.dir/src/Body.cpp.o CMakeFiles/nbody.dir/src/utils.cpp.o -o nbody   -L/home/users2/fcla/s1850432/SFML/lib64  -Wl,-rpath,/home/users2/fcla/s1850432/SFML/lib64 -lOpenCL -lsfml-graphics -lsfml-window -lsfml-system
