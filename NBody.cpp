@@ -23,7 +23,7 @@
 constexpr float G = 1.f;
 constexpr float dt = .1f;
 constexpr float eps = 1e-1f;
-constexpr size_t n_bodies = 5;
+constexpr size_t n_bodies = 20;
 constexpr float center_mass = 1000.f;
 constexpr float TARGET_FPS = 165.f;
 const sf::Time FRAME_DURATION = sf::seconds(1.f / TARGET_FPS);
@@ -61,7 +61,7 @@ void compute_forces(std::vector<Body>& bodies, float G, float eps){
 
 }
 
-void integrate_bodies(std::vector<Body>& bodies, float dt){
+void integrate_bodies(std::vector<Body>& bodies, float dt, float width, float height){
 
     for (auto& body : bodies) {
 
@@ -73,6 +73,11 @@ void integrate_bodies(std::vector<Body>& bodies, float dt){
         body.position_x = body.position_x + body.velocity_x * dt;
         body.position_y = body.position_y + body.velocity_y * dt;
 
+        // Toroidal wrapping
+        if (body.position_x < -width / 2) body.position_x += width;
+        if (body.position_x >  width / 2) body.position_x -= width;
+        if (body.position_y < -height / 2) body.position_y += height;
+        if (body.position_y >  height / 2) body.position_y -= height;
     }
 
 }
@@ -126,7 +131,7 @@ int main(){
     const int WIDTH = 2560;
     const int HEIGHT = 1440;
 
-    bool use_gpu = true; //Change between OpenCL and CPU
+    bool use_gpu = false; //Change between OpenCL and CPU
 
     std::vector<Body> bodies = initialize_bodies(n_bodies, center_mass, WIDTH, HEIGHT);
     size_t n = bodies.size();
@@ -183,7 +188,7 @@ int main(){
     // Start total timer
     auto total_start = std::chrono::high_resolution_clock::now();
 
-    while (window.isOpen() && frame_count < 1000){
+    while (window.isOpen() && frame_count < 10000){
         sf::Event e;
         while(window.pollEvent(e)){ if (e.type == sf::Event::Closed) window.close();}
        
@@ -227,7 +232,7 @@ int main(){
         } else {
             //CPU version
             compute_forces(bodies, G, eps);
-            integrate_bodies(bodies, dt);
+            integrate_bodies(bodies, dt, WIDTH, HEIGHT);
         }
         auto compute_end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> compute_duration = compute_end - compute_start;
@@ -270,9 +275,9 @@ int main(){
     auto total_end = std::chrono::high_resolution_clock::now();
     double total_time = std::chrono::duration<double, std::milli>(total_end - total_start).count();
     if (use_gpu)
-        std::cout << "[GPU] Total time for 1000 frames: " << total_time << " ms\n";
+        std::cout << "[GPU] Total time for 10000 frames: " << total_time << " ms\n";
     else
-        std::cout << "[CPU] Total time for 1000 frames: " << total_time << " ms\n";
+        std::cout << "[CPU] Total time for 10000 frames: " << total_time << " ms\n";
 
     return 0;
 
@@ -301,7 +306,7 @@ int main(){
 
     for (int step = 0; step < 100; ++step) {
         compute_forces(bodies, G, eps);
-        integrate_bodies(bodies, dt);
+        integrate_bodies(bodies, dt, WIDTH, HEIGHT);
     }
 
     auto cpu_end = std::chrono::high_resolution_clock::now();
