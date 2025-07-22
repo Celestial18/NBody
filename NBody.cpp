@@ -1,3 +1,14 @@
+/*
+* @author Salina Maharjan
+* @date 2025-07-22
+* To compile your source code, please use the following command:
+*  mkdir build
+*  cd build
+*  cmake ..
+*  make
+*  cd ..
+*  ./build/nbody
+*/
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -110,12 +121,12 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
 }
 
 // Main Loop 
-/*int main(){
+int main(){
     // Window properties
     const int WIDTH = 2560;
     const int HEIGHT = 1440;
 
-    bool use_gpu = false; //Change between OpenCL and CPU
+    bool use_gpu = true; //Change between OpenCL and CPU
 
     std::vector<Body> bodies = initialize_bodies(n_bodies, center_mass, WIDTH, HEIGHT);
     size_t n = bodies.size();
@@ -224,7 +235,7 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
         /*if (use_gpu)
             std::cout << "[OpenCL] Compute time: " << compute_duration.count() << " ms\n";
         else
-            std::cout << "[CPU] Compute time: " << compute_duration.count() << " ms\n";
+            std::cout << "[CPU] Compute time: " << compute_duration.count() << " ms\n";*/
 
         // Clear screen
         window.clear(sf::Color::Black);
@@ -265,9 +276,9 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
 
     return 0;
 
-}*/
+}
 
-int main() {
+/*int main() {
     const int WIDTH = 2560;
     const int HEIGHT = 1440;
     const size_t n = 1000; // use a larger number to see speed differences
@@ -346,7 +357,7 @@ int main() {
     std::cout << "OpenCL (GPU) version time: " << gpu_duration << " ms\n";
 
     return 0;
-}
+}*/
 
 
 
