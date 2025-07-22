@@ -50,3 +50,14 @@ void init_opencl(const std::string& cl_file) {
     kernel_force = clCreateKernel(program, "compute_forces", &err);
     kernel_integrate = clCreateKernel(program, "integrate_bodies", &err);
 }
+
+void cleanup_opencl(){
+        
+        clReleaseKernel(kernel_force);
+        clReleaseKernel(kernel_integrate);
+
+
+        clReleaseProgram(program);
+        clReleaseCommandQueue(queue);
+        clReleaseContext(context);
+}

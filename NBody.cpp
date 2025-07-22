@@ -219,7 +219,7 @@ int main(){
             clSetKernelArg(kernel_integrate, 8, sizeof(float), &HEIGHT);
 
             clEnqueueNDRangeKernel(queue, kernel_integrate, 1, nullptr, &global_size, nullptr, 0, nullptr, nullptr);
-
+            
             // Read positions back for rendering
             clEnqueueReadBuffer(queue, buf_px, CL_TRUE, 0, n * sizeof(float), pos_x.data(), 0, nullptr, nullptr);
             clEnqueueReadBuffer(queue, buf_py, CL_TRUE, 0, n * sizeof(float), pos_y.data(), 0, nullptr, nullptr);
@@ -278,7 +278,19 @@ int main(){
         std::cout << "[GPU] Total time for 10000 frames: " << total_time << " ms\n";
     else
         std::cout << "[CPU] Total time for 10000 frames: " << total_time << " ms\n";
+    
+        //Cleanup
+        if (use_gpu){
+        clReleaseMemObject(buf_px);
+        clReleaseMemObject(buf_py);
+        clReleaseMemObject(buf_vx);
+        clReleaseMemObject(buf_vy);
+        clReleaseMemObject(buf_ax);
+        clReleaseMemObject(buf_ay);
+        clReleaseMemObject(buf_m);
 
+        cleanup_opencl(); 
+    }
     return 0;
 
 }
