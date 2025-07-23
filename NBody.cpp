@@ -23,7 +23,7 @@
 constexpr float G = 1.f;
 constexpr float dt = .1f;
 constexpr float eps = 1e-1f;
-constexpr size_t n_bodies = 20;
+constexpr unsigned int n_bodies = 20;
 constexpr float center_mass = 1000.f;
 constexpr float TARGET_FPS = 165.f;
 const sf::Time FRAME_DURATION = sf::seconds(1.f / TARGET_FPS);
@@ -128,14 +128,18 @@ std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float wid
 // Main Loop 
 int main(){
     // Window properties
-    const int WIDTH = 2560;
-    const int HEIGHT = 1440;
+    //constexpr can be evaluated at compile time 
+    constexpr int WIDTH = 2560;
+    constexpr int HEIGHT = 1440;
 
     bool use_gpu = false; //Change between OpenCL and CPU
 
     std::vector<Body> bodies = initialize_bodies(n_bodies, center_mass, WIDTH, HEIGHT);
+
     size_t n = bodies.size();
+
     std::vector<float> pos_x(n), pos_y(n), vel_x(n), vel_y(n), acc_x(n), acc_y(n), mass(n);
+    
     for (size_t i = 0; i < n; ++i) {
         pos_x[i] = bodies[i].position_x;
         pos_y[i] = bodies[i].position_y;
