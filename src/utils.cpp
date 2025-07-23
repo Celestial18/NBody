@@ -28,7 +28,7 @@ void init_opencl(const std::string& cl_file) {
 
     err = clGetPlatformIDs(1, &platform, nullptr);
     if(gpu_available()){
-        err |= clGetDeviceIDS(platform, CL_DEVICE_TYPE_GPU, 1, &device, nullptr); 
+        err |= clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, nullptr); 
     } else {
         err |= clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 1, &device, nullptr);
     }
@@ -72,18 +72,18 @@ bool gpu_available(){
     cl_int err = clGetPlatformIDs(0, nullptr, &num_platforms); 
     if (err != CL_SUCCESS || num_platforms == 0){
         std::cout << "No platforms for OpenCL use found. Error: "<< err << std::endl; 
-        return 1 
+        return 1;
     }
 
     cl_platform_id* platforms = new cl_platform_id[num_platforms]; 
 
     err = clGetPlatformIDs(num_platforms, platforms, nullptr); 
-    if (err != CL_SUCCES){
+    if (err != CL_SUCCESS){
         std::cout << "Failed to get platform ID's. Error: " << err << std::endl; 
         return false; 
     }
 
-    bool gpu_found = false 
+    bool gpu_found = false; 
 
     for (cl_uint i=0; i<num_platforms; i++){
         cl_uint num_devices; 
