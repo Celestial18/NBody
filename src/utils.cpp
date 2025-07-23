@@ -27,7 +27,11 @@ void init_opencl(const std::string& cl_file) {
     cl_int err;
 
     err = clGetPlatformIDs(1, &platform, nullptr);
-    err |= clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, nullptr);
+    if(gpu_available()){
+        err |= clGetDeviceIDS(platform, CL_DEVICE_TYPE_GPU, 1, &device, nullptr); 
+    } else {
+        err |= clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, 1, &device, nullptr);
+    }
     context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &err);
     queue = clCreateCommandQueueWithProperties(context, device, 0, &err);
 
@@ -60,4 +64,54 @@ void cleanup_opencl(){
         clReleaseProgram(program);
         clReleaseCommandQueue(queue);
         clReleaseContext(context);
+}
+
+
+bool gpu_available(){
+    cl_uint num_platforms; 
+    cl_int err = clGetPlatformIDs(0, nullptr, &num_platforms); 
+    if (err != CL_SUCCESS || num_platforms == 0){
+        std::cout << "No platforms for OpenCL use found. Error: "<< err << std::endl; 
+        return 1 
+    }
+
+    cl_platform_id* platforms = new cl_platform_id[num_platforms]; 
+
+    err = clGetPlatformIDs(num_platforms, platforms, nullptr); 
+    if (err != CL_SUCCES){
+        std::cout << "Failed to get platform ID's. Error: " << err << std::endl; 
+        return false; 
+    }
+
+    bool gpu_found = false 
+
+    for (cl_uint i=0; i<num_platforms; i++){
+        cl_uint num_devices; 
+
+        err = clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, 0, nullptr, &num_devices); 
+        if (err!= CL_SUCCESS && num_devices > 0){
+           //Allocate memory for devices
+            cl_device_id* devices = new cl_device_id[num_devices];
+            err = clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_GPU, num_devices, devices, nullptr);
+            if (err == CL_SUCCESS) {
+                gpu_found = true;
+                std::cout << "Found " << num_devices << " GPU device(s) on platform " << i << ":\n";
+
+                //Get device details
+                for (cl_uint j = 0; j < num_devices; ++j) {
+                    char device_name[128];
+                    clGetDeviceInfo(devices[j], CL_DEVICE_NAME, sizeof(device_name), device_name, nullptr);
+                    std::cout << "  GPU Device " << j << ": " << device_name << std::endl;
+                }
+                delete[] devices;
+            }
+        }
+    }
+    if (!gpu_found) {
+        std::cout << "No GPU devices found." << std::endl;
+    }
+
+    //Cleanup
+    delete[] platforms;
+    return gpu_found;
 }

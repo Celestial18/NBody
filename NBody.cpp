@@ -133,7 +133,7 @@ int main(){
     constexpr int WIDTH = 2560;
     constexpr int HEIGHT = 1440;
 
-    bool use_gpu = false; //Change between OpenCL and CPU
+    bool use_gpu = gpu_available(); //Change between OpenCL and CPU
 
     std::vector<Body> bodies = initialize_bodies(n_bodies, center_mass, static_cast<float>(WIDTH), static_cast<float>(HEIGHT));
 
@@ -156,7 +156,7 @@ int main(){
 
     if (use_gpu){
         // Initialize OpenCL once at startup
-        init_opencl("opencl/NBody.cl");
+        init_opencl("../opencl/NBody.cl");
 
         // Create OpenCL buffers
 

@@ -16,3 +16,5 @@ std::string load_kernel_source(const std::string& filename);
 void init_opencl(const std::string& cl_file);
 
 void cleanup_opencl(); 
+
+bool gpu_available(); 
