@@ -95,7 +95,8 @@ float orbital_velocity_scalar(float M, float r) {
 // Initialze the bodies randomly in the universe
 std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float width, float height){
     std::vector<Body> bodies;
-
+    bodies.reserve(n);  // Reserve space for efficiency
+    
     //random generator
     std::mt19937 rng(42);  // Fixed seed for reproducibility
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * M_PI);
@@ -134,7 +135,7 @@ int main(){
 
     bool use_gpu = false; //Change between OpenCL and CPU
 
-    std::vector<Body> bodies = initialize_bodies(n_bodies, center_mass, WIDTH, HEIGHT);
+    std::vector<Body> bodies = initialize_bodies(n_bodies, center_mass, static_cast<float>(WIDTH), static_cast<float>(HEIGHT));
 
     size_t n = bodies.size();
 
@@ -196,9 +197,14 @@ int main(){
         sf::Event e;
         while(window.pollEvent(e)){ if (e.type == sf::Event::Closed) window.close();}
        
-        auto compute_start = std::chrono::high_resolution_clock::now();
+        const auto compute_start = std::chrono::high_resolution_clock::now();
 
         if (use_gpu){
+
+            const unsigned int n_uint = static_cast<unsigned int>(n); 
+            const float width_f = static_cast<float>(WIDTH);  
+            const float height_f = static_cast<float>(HEIGHT); 
+
             clSetKernelArg(kernel_force, 0, sizeof(cl_mem), &buf_px);
             clSetKernelArg(kernel_force, 1, sizeof(cl_mem), &buf_py);
             clSetKernelArg(kernel_force, 2, sizeof(cl_mem), &buf_ax);
@@ -208,7 +214,7 @@ int main(){
             clSetKernelArg(kernel_force, 6, sizeof(float), &G);
             clSetKernelArg(kernel_force, 7, sizeof(float), &eps);
 
-            size_t global_size = n;
+            const size_t global_size = n;
             clEnqueueNDRangeKernel(queue, kernel_force, 1, nullptr, &global_size, nullptr, 0, nullptr, nullptr);
 
             // Run integrate_bodies kernel
@@ -238,8 +244,8 @@ int main(){
             compute_forces(bodies, G, eps);
             integrate_bodies(bodies, dt, WIDTH, HEIGHT);
         }
-        auto compute_end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double, std::milli> compute_duration = compute_end - compute_start;
+        const auto compute_end = std::chrono::high_resolution_clock::now();
+        const std::chrono::duration<double, std::milli> compute_duration = compute_end - compute_start;
 
         /*if (use_gpu)
             std::cout << "[OpenCL] Compute time: " << compute_duration.count() << " ms\n";
@@ -259,7 +265,7 @@ int main(){
         }
 
         // FPS calculation and display
-        float frameTime = fpsClock.restart().asSeconds();
+        const float frameTime = fpsClock.restart().asSeconds();
         lastFPS = 1.0f / frameTime;
         fpsText.setString("FPS: " + std::to_string(static_cast<int>(lastFPS)));
         window.draw(fpsText);
@@ -276,8 +282,8 @@ int main(){
         }
         frameClock.restart();
     }
-    auto total_end = std::chrono::high_resolution_clock::now();
-    double total_time = std::chrono::duration<double, std::milli>(total_end - total_start).count();
+    const auto total_end = std::chrono::high_resolution_clock::now();
+    const double total_time = std::chrono::duration<double, std::milli>(total_end - total_start).count();
     if (use_gpu)
         std::cout << "[GPU] Total time for 10000 frames: " << total_time << " ms\n";
     else
