@@ -96,7 +96,7 @@ float orbital_velocity_scalar(float M, float r) {
 std::vector<Body> initialize_bodies(unsigned int n, float center_mass, float width, float height){
     std::vector<Body> bodies;
     bodies.reserve(n);  // Reserve space for efficiency
-    
+
     //random generator
     std::mt19937 rng(42);  // Fixed seed for reproducibility
     std::uniform_real_distribution<float> angle_dist(0.0f, 2.0f * M_PI);

@@ -14,3 +14,5 @@ std::string load_kernel_source(const std::string& filename);
 
 // Initialize OpenCL (context, queue, kernels)
 void init_opencl(const std::string& cl_file);
+
+void cleanup_opencl(); 
