@@ -190,7 +190,7 @@ int main(){
     int frame_count = 0;
 
     // Start total timer
-    auto total_start = std::chrono::high_resolution_clock::now();
+    const auto total_start = std::chrono::high_resolution_clock::now();
 
     while (window.isOpen() && frame_count < 10000){
         sf::Event e;
